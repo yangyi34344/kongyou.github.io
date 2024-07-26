@@ -1,50 +1,94 @@
-body {
-    transition: background-color 0.5s ease; /* 平滑过渡背景颜色变化 */
-    font-family: '宋体', '楷体', serif;
-    color: #333;
-    margin: 0; /* 移除默认边距 */
-    padding: 0; /* 移除默认内边距 */
-    display: flex;
-    flex-direction: column; /* 改为垂直排列 */
-    align-items: center; /* 水平居中 */
-    justify-content: flex-start; /* 垂直顶部对齐 */
-    min-height: 100vh; /* 至少为视窗高度 */
-    background-color: #f5f5f5; /* 初始背景颜色 */
-}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搞怪的中国风格页面</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 文字内容 -->
+        <div class="content">
+            <div>
+                <h1 class="title">姓名：下樱桃</h1>
+                <p>个人名言：我爱锁掉我爱路</p>
+                <p>好基友：胀痛</p>
+                <p>宿舍义父：赵旭阳</p>
+            </div>
+        </div>
+        <!-- 图片轮转 -->
+        <div class="img-carousel">
+            <img class="chinese-style-img" src="下樱桃1.jpg" alt="下樱桃1" style="display: block;">
+            <img class="chinese-style-img" src="下樱桃2.jpg" alt="下樱桃2" style="display: none;">
+            <img class="chinese-style-img" src="下樱桃3.jpg" alt="下樱桃3" style="display: none;">
+            <img class="chinese-style-img" src="下樱桃4.jpg" alt="下樱桃4" style="display: none;">
+            <img class="chinese-style-img" src="下樱桃5.jpg" alt="下樱桃5" style="display: none;">
+        </div>
+    </div>
 
-.container {
-    width: 90%; /* 容器宽度 */
-    max-width: 1200px; /* 最大宽度 */
-    padding: 20px; /* 容器内边距 */
-    box-sizing: border-box; /* 边框计算在宽度内 */
-    text-align: center; /* 文本居中 */
-}
-
-.content {
-    margin-bottom: 20px; /* 下边距 */
-}
-
-.content h1, .content p {
-    margin: 10px 0; /* 段落间距 */
-}
-
-.chinese-style-img {
-    width: 100%;
-    max-width: 300px; /* 最大宽度 */
-    height: auto; /* 高度自动 */
-    border-radius: 50% / 100%; /* 创建椭圆形状 */
-    border: 4px solid #d35400;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    margin-bottom: 20px; /* 下边距 */
-}
-
-.img-carousel {
-    width: 100%;
-    max-width: 300px; /* 最大宽度 */
-    overflow: hidden; /* 隐藏超出部分 */
-}
-
-.img-carousel img {
-    width: 100%;
-    display: block;
-}
+    <script>
+        // 搞怪的JavaScript程序
+        var colors = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
+        var colorIndex = 0;
+    
+        function changeBackgroundColor() {
+            var currentColor = colors[colorIndex];
+            colorIndex = (colorIndex + 1) % colors.length; // 循环颜色数组
+            document.body.style.backgroundColor = currentColor;
+    
+            // 等待一段时间（1-3秒）后再次改变颜色
+            setTimeout(changeBackgroundColor, Math.random() * 2000 + 1000);
+        }
+    
+        function randomAlert() {
+            var messages = [
+                "赵旭阳是你爸爸！",
+                "快叫爹",
+                "不要离开这个页面！",
+                "下樱桃在看着你！",
+                "你已经被锁定在这个页面了！",
+                "再来一次！",
+                "你确定要离开吗？"
+                
+            ];
+            var message = messages[Math.floor(Math.random() * messages.length)];
+            alert(message);
+        }
+    
+        // 页面加载完成后执行以下函数
+        window.onload = function() {
+            changeBackgroundColor(); // 开始背景颜色变化
+            setInterval(randomAlert, 5000); // 每5秒随机弹出一个提示框
+            cycleImages(); // 开始图片轮转
+        };
+    
+        window.onbeforeunload = function(event) {
+            var message = "真的要离开吗？赵旭阳会伤心的！";
+            return message;
+        };
+    
+        // 图片轮转
+        var images = document.querySelectorAll('.img-carousel img');
+        var totalImages = images.length;
+        var currentImageIndex = 0;
+    
+        function cycleImages() {
+            // 隐藏所有图片
+            for (var i = 0; i < totalImages; i++) {
+                images[i].style.display = 'none';
+            }
+    
+            // 显示当前图片
+            var currentImage = images[currentImageIndex];
+            currentImage.style.display = 'block';
+    
+            // 更新当前图片索引
+            currentImageIndex = (currentImageIndex + 1) % totalImages;
+    
+            // 5秒后再次调用cycleImages进行图片轮转
+            setTimeout(cycleImages, 5000);
+        }
+    </script>
+</body>
+</html>
