@@ -33,6 +33,17 @@
     </audio>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var audio = document.getElementById('backgroundMusic');
+            // 等待三秒后尝试取消静音
+            setTimeout(function() {
+                audio.muted = false;
+                // 如果音乐因静音而暂停，这里可以重新播放
+                if (audio.paused) {
+                    audio.play();
+                }
+            }, 3000);
+        });
         // 搞怪的JavaScript程序
         var colors = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
         var colorIndex = 0;
