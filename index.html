@@ -26,6 +26,12 @@
         </div>
     </div>
 
+    <!-- 隐藏的音频播放器 -->
+    <audio id="backgroundMusic" loop autoplay>
+        <source src="音乐.mp3" type="audio/mpeg">
+       
+    </audio>
+
     <script>
         // 搞怪的JavaScript程序
         var colors = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
@@ -49,7 +55,6 @@
                 "你已经被锁定在这个页面了！",
                 "再来一次！",
                 "你确定要离开吗？"
-                
             ];
             var message = messages[Math.floor(Math.random() * messages.length)];
             alert(message);
