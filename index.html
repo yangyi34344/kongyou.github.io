@@ -34,15 +34,15 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var audio = document.getElementById('backgroundMusic');
-            
-            // 等待三秒后尝试取消静音
-            setTimeout(function() {
+
+            // 监听用户与页面的第一个交互
+            document.body.addEventListener('click', function() {
+                // 当用户与页面交互后，取消静音并播放音频
                 audio.muted = false;
-                // 如果音乐因静音而暂停，这里可以重新播放
                 if (audio.paused) {
                     audio.play();
                 }
-            }, 3000);
+            });
         });
 
         // 搞怪的JavaScript程序
