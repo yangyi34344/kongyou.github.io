@@ -27,14 +27,14 @@
     </div>
 
     <!-- 隐藏的音频播放器 -->
-    <audio id="backgroundMusic" loop autoplay>
+    <audio id="backgroundMusic" loop muted autoplay>
         <source src="音乐.mp3" type="audio/mpeg">
-       
     </audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var audio = document.getElementById('backgroundMusic');
+            
             // 等待三秒后尝试取消静音
             setTimeout(function() {
                 audio.muted = false;
@@ -44,19 +44,20 @@
                 }
             }, 3000);
         });
+
         // 搞怪的JavaScript程序
         var colors = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
         var colorIndex = 0;
-    
+
         function changeBackgroundColor() {
             var currentColor = colors[colorIndex];
             colorIndex = (colorIndex + 1) % colors.length; // 循环颜色数组
             document.body.style.backgroundColor = currentColor;
-    
+
             // 等待一段时间（1-3秒）后再次改变颜色
             setTimeout(changeBackgroundColor, Math.random() * 2000 + 1000);
         }
-    
+
         function randomAlert() {
             var messages = [
                 "赵旭阳是你爸爸！",
@@ -70,37 +71,37 @@
             var message = messages[Math.floor(Math.random() * messages.length)];
             alert(message);
         }
-    
+
         // 页面加载完成后执行以下函数
         window.onload = function() {
             changeBackgroundColor(); // 开始背景颜色变化
             setInterval(randomAlert, 5000); // 每5秒随机弹出一个提示框
             cycleImages(); // 开始图片轮转
         };
-    
+
         window.onbeforeunload = function(event) {
             var message = "真的要离开吗？赵旭阳会伤心的！";
             return message;
         };
-    
+
         // 图片轮转
         var images = document.querySelectorAll('.img-carousel img');
         var totalImages = images.length;
         var currentImageIndex = 0;
-    
+
         function cycleImages() {
             // 隐藏所有图片
             for (var i = 0; i < totalImages; i++) {
                 images[i].style.display = 'none';
             }
-    
+
             // 显示当前图片
             var currentImage = images[currentImageIndex];
             currentImage.style.display = 'block';
-    
+
             // 更新当前图片索引
             currentImageIndex = (currentImageIndex + 1) % totalImages;
-    
+
             // 5秒后再次调用cycleImages进行图片轮转
             setTimeout(cycleImages, 5000);
         }
