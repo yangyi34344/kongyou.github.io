@@ -3,107 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>搞怪的中国风格页面</title>
-    <link rel="stylesheet" href="style.css">
+    <title>经贸男模团-4369F3</title>
+    <style>
+    /* 进度提示样式 */
+    .process-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.9);
+        color: white;
+        padding: 25px 40px;
+        border-radius: 15px;
+        text-align: center;
+        z-index: 10000;
+        box-shadow: 0 0 30px rgba(255,0,0,0.5);
+        min-width: 300px;
+    }
+    .process-box progress {
+        width: 100%;
+        height: 25px;
+        margin: 15px 0;
+        background: #444;
+        border-radius: 12px;
+    }
+    .process-box progress::-webkit-progress-value {
+        background: #ff4444;
+        border-radius: 12px;
+    }
+    .process-box div {
+        font-size: 18px;
+        color: #ff4444;
+        margin: 10px 0;
+    }
+
+    /* 抓拍提示 */
+    .capture-alert {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.9);
+        color: red;
+        padding: 20px 40px;
+        border-radius: 15px;
+        font-size: 24px;
+        text-align: center;
+        z-index: 10000;
+        box-shadow: 0 0 30px rgba(255,0,0,0.5);
+        display: none;
+    }
+
+    /* 摄像头样式 */
+    #webcam-overlay {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+        z-index: 9999;
+        border: 10px solid red;
+        box-shadow: 0 0 50px rgba(255,0,0,0.8);
+        display: none;
+        animation: shock 0.3s linear 3;
+    }
+
+    @keyframes shock {
+        0% { transform: translate(-50%, -50%) scale(1); }
+        50% { transform: translate(-50%, -50%) scale(1.1); }
+        100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* 原有样式 */
+    body {
+        --color1: #ff69b4;
+        --color2: #7fff00;
+        --color3: #00ffff;
+        font-family: '宋体', '楷体', serif;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(45deg, var(--color1), var(--color2), var(--color3));
+        background-size: 400% 400%;
+        animation: 
+            discoBackground 6s linear infinite,
+            colorChange 8s step-end infinite;
+        min-height: 100vh;
+        overflow-x: hidden;
+        transition: all 0.3s;
+    }
+
+    @keyframes discoBackground {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes colorChange {
+        0% { filter: hue-rotate(0deg); }
+        25% { filter: hue-rotate(90deg) saturate(200%); }
+        50% { filter: hue-rotate(180deg) invert(100%); }
+        75% { filter: hue-rotate(270deg) blur(2px); }
+    }
+
+    .container {
+        width: 95%;
+        max-width: 800px;
+        padding: 20px;
+        background: rgba(255,255,255,0.9);
+        border-radius: 20px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        margin: 20px auto;
+        backdrop-filter: blur(5px);
+    }
+
+    .img-carousel {
+        width: 100%;
+        height: 70vh;
+        min-height: 400px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        background: #ff69b4;
+    }
+
+    .img-carousel img {
+        width: auto;
+        height: auto;
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: 
+            opacity 0.5s ease,
+            transform 0.8s ease 3s,
+            filter 0.8s ease 3s,
+            border-color 0.8s ease 3s;
+        border: 3px solid transparent;
+    }
+
+    .img-carousel img.active {
+        opacity: 1;
+    }
+
+    .img-carousel img.delayed-effect {
+        filter: hue-rotate(calc(360deg * random()));
+        transform: translate(-50%, -50%) rotate(calc(-5deg + 10deg * random())) scale(0.95);
+        border-color: #00ff00;
+    }
+
+    .fake-notification {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: #ff4444;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+        100% { transform: scale(1); }
+    }
+
+    @media (max-width: 768px) {
+        .img-carousel {
+            height: 60vh;
+            min-height: 300px;
+        }
+    }
+    </style>
 </head>
 <body>
+    <div class="fake-notification"></div>
+    <video id="webcam-overlay" autoplay playsinline></video>
+    <div class="capture-alert" id="captureAlert">⚠️ 已捕获你的形象！ ⚠️</div>
+    
     <div class="container">
-        <!-- 文字内容 -->
         <div class="content">
-            <div>
-                <h1 class="title">姓名：下樱桃</h1>
-                <p>个人名言：沙雕不是一种状态，而是一种生活态度。</p>
-            </div>
+            <h1 class="title">⚠️ F3全员介绍⚠️</h1>
+            <p>沙雕的人生不可定义，他们是来自河南经贸的男模团F3↓↓↓</p>
         </div>
-        <!-- 图片轮转 -->
+        
         <div class="img-carousel">
-            <img class="chinese-style-img" src="下樱桃1.jpg" alt="下樱桃1" style="display: block;">
-            <img class="chinese-style-img" src="下樱桃2.jpg" alt="下樱桃2" style="display: none;">
-            <img class="chinese-style-img" src="下樱桃3.jpg" alt="下樱桃3" style="display: none;">
-            <img class="chinese-style-img" src="下樱桃4.jpg" alt="下樱桃4" style="display: none;">
-            <img class="chinese-style-img" src="下樱桃5.jpg" alt="下樱桃5" style="display: none;">
+            <img class="active" src="下樱桃1.jpg">
+            <img src="下樱桃2.jpg">
+            <img src="下樱桃3.jpg">
+            <img src="下樱桃4.jpg">
+            <img src="下樱桃5.jpg">
+            <img src="下樱桃6.jpg">
+            <img src="胀痛1.jpg">
+            <img src="胀痛2.jpg">
+            <img src="胀痛3.jpg">
+            <img src="胀痛4.jpg">
+            <img src="震棒1.jpg">
+            <img src="震棒2.jpg">
         </div>
     </div>
 
-    <!-- 隐藏的音频播放器 -->
-    <audio id="backgroundMusic" loop muted autoplay>
-        <source src="音乐.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bgm" loop autoplay src="音乐.mp4"></audio>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var audio = document.getElementById('backgroundMusic');
+    const CONFIG = {
+        imageCount: 12,
+        switchTime: 8000,
+        effectDelay: 3000,
+        firstRoundOffset: 5000
+    };
 
-            // 监听用户与页面的第一个交互
-            document.body.addEventListener('click', function() {
-                // 当用户与页面交互后，取消静音并播放音频
-                audio.muted = false;
-                if (audio.paused) {
-                    audio.play();
-                }
-            });
-        });
+    let currentIndex = 0;
+    let carouselInterval;
 
-        // 搞怪的JavaScript程序
-        var colors = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
-        var colorIndex = 0;
+    async function activateCamera() {
+        try {
+            const video = document.getElementById('webcam-overlay');
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            
+            setTimeout(() => {
+                // 显示抓拍提示
+                const alert = document.getElementById('captureAlert');
+                alert.style.display = 'block';
+                video.style.display = 'block';
+                
+                // 音效增强
+                const audioCtx = new AudioContext();
+                const oscillator = audioCtx.createOscillator();
+                oscillator.connect(audioCtx.destination);
+                oscillator.frequency.setValueAtTime(660, audioCtx.currentTime);
+                oscillator.start();
+                setTimeout(() => oscillator.stop(), 500);
 
-        function changeBackgroundColor() {
-            var currentColor = colors[colorIndex];
-            colorIndex = (colorIndex + 1) % colors.length; // 循环颜色数组
-            document.body.style.backgroundColor = currentColor;
-
-            // 等待一段时间（1-3秒）后再次改变颜色
-            setTimeout(changeBackgroundColor, Math.random() * 2000 + 1000);
+                // 3秒后开始上传流程
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                    video.style.display = 'none';
+                    stream.getTracks().forEach(track => track.stop());
+                    startUploadProcess();
+                }, 3000);
+            }, 500);
+        } catch {
+            showFakeCameraError();
         }
+    }
 
-        function randomAlert() {
-            var messages = [
-                "赵旭阳是你爸爸！",
-                "快叫爹",
-                "不要离开这个页面！",
-                "下樱桃在看着你！",
-                "你已经被锁定在这个页面了！",
-                "再来一次！",
-                "你确定要离开吗？"
-            ];
-            var message = messages[Math.floor(Math.random() * messages.length)];
-            alert(message);
-        }
-
-        // 页面加载完成后执行以下函数
-        window.onload = function() {
-            changeBackgroundColor(); // 开始背景颜色变化
-            setInterval(randomAlert, 5000); // 每5秒随机弹出一个提示框
-            cycleImages(); // 开始图片轮转
-        };
-
-        window.onbeforeunload = function(event) {
-            var message = "真的要离开吗？赵旭阳会伤心的！";
-            return message;
-        };
-
-        // 图片轮转
-        var images = document.querySelectorAll('.img-carousel img');
-        var totalImages = images.length;
-        var currentImageIndex = 0;
-
-        function cycleImages() {
-            // 隐藏所有图片
-            for (var i = 0; i < totalImages; i++) {
-                images[i].style.display = 'none';
+    function startUploadProcess() {
+        const uploadBox = createProcessBox('正在上传到云端...', '⏫ 已上传');
+        let uploadValue = 0;
+        
+        const uploadTimer = setInterval(() => {
+            uploadValue += Math.random() * 8;
+            uploadBox.querySelector('progress').value = uploadValue;
+            uploadBox.querySelector('div').textContent = `⏫ 已上传 ${Math.min(100, uploadValue.toFixed(1))}%`;
+            
+            if(uploadValue >= 100) {
+                clearInterval(uploadTimer);
+                uploadBox.remove();
+                setTimeout(startDownloadProcess, 800);
             }
+        }, 300);
+    }
 
-            // 显示当前图片
-            var currentImage = images[currentImageIndex];
-            currentImage.style.display = 'block';
+    function startDownloadProcess() {
+        const downloadBox = createProcessBox('正在下载劲爆内容...', '⏬ 已下载');
+        let downloadValue = 0;
+        
+        const downloadTimer = setInterval(() => {
+            downloadValue += Math.random() * 5;
+            downloadBox.querySelector('progress').value = downloadValue;
+            downloadBox.querySelector('div').textContent = `⏬ 已下载 ${Math.min(100, downloadValue.toFixed(1))}%`;
+            
+            if(downloadValue >= 100) {
+                clearInterval(downloadTimer);
+                downloadBox.remove();
+                setTimeout(forceShareAlert, 500);
+            }
+        }, 500);
+    }
 
-            // 更新当前图片索引
-            currentImageIndex = (currentImageIndex + 1) % totalImages;
+    function createProcessBox(title, statusPrefix) {
+        const box = document.createElement('div');
+        box.className = 'process-box';
+        box.innerHTML = `
+            <div style="font-size:22px;margin-bottom:15px;">${title}</div>
+            <progress value="0" max="100"></progress>
+            <div>${statusPrefix} 0%</div>
+        `;
+        document.body.appendChild(box);
+        return box;
+    }
 
-            // 5秒后再次调用cycleImages进行图片轮转
-            setTimeout(cycleImages, 5000);
-        }
+    function initialize() {
+        startCarousel();
+        setTimeout(activateCamera, 1000);
+        
+        const firstRoundDuration = CONFIG.imageCount * CONFIG.switchTime;
+        setTimeout(() => {
+            activateCamera();
+        }, firstRoundDuration + CONFIG.firstRoundOffset);
+    }
+
+    function startCarousel() {
+        carouselInterval = setInterval(switchImage, CONFIG.switchTime);
+        document.querySelector('.img-carousel img').classList.add('active');
+    }
+
+    function switchImage() {
+        const currentImg = document.querySelector('.img-carousel img.active');
+        currentImg.classList.remove('active', 'delayed-effect');
+
+        currentIndex = (currentIndex + 1) % CONFIG.imageCount;
+        const newImg = document.querySelectorAll('.img-carousel img')[currentIndex];
+        
+        newImg.classList.add('active');
+        setTimeout(() => applyEffects(newImg), CONFIG.effectDelay);
+    }
+
+    function applyEffects(img) {
+        img.classList.add('delayed-effect');
+        img.style.borderColor = ['#00ff00', '#ff00ff', 'transparent'][Math.floor(Math.random()*3)];
+    }
+
+    function forceShareAlert() {
+        const confirm = window.confirm('内容下载失败！是否允许自动分享到社交网络？');
+        alert(confirm ? '分享成功！准备接受嘲笑吧！' : '已自动选择分享！反抗无效！');
+    }
+
+    function showFakeCameraError() {
+        const fakeImg = document.createElement('img');
+        fakeImg.className = 'webcam-shot';
+        fakeImg.src = 'https://fakeimg.pl/120x90/ff0000/fff?text=抓拍失败%20XD';
+        document.body.appendChild(fakeImg);
+        setTimeout(() => fakeImg.remove(), 5000);
+    }
+
+    window.addEventListener('load', () => {
+        setInterval(() => {
+            const colors = ['#ff00ff','#00ff00','#ffff00','#ff1493','#00ffff','#ff4500']
+                .sort(() => Math.random() - 0.5);
+            document.body.style.setProperty('--color1', colors[0]);
+            document.body.style.setProperty('--color2', colors[1]);
+            document.body.style.setProperty('--color3', colors[2]);
+        }, 5000);
+
+        const audio = document.getElementById('bgm');
+        audio.volume = 0.3;
+        audio.play().catch(() => {});
+
+        initialize();
+    });
     </script>
 </body>
 </html>
