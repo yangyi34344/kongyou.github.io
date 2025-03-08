@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>经贸男模团-4369F3</title>
     <style>
-    /* 进度提示样式 */
     .process-box {
         position: fixed;
         top: 50%;
@@ -36,8 +35,6 @@
         color: #ff4444;
         margin: 10px 0;
     }
-
-    /* 抓拍提示 */
     .capture-alert {
         position: fixed;
         top: 50%;
@@ -53,8 +50,6 @@
         box-shadow: 0 0 30px rgba(255,0,0,0.5);
         display: none;
     }
-
-    /* 摄像头样式 */
     #webcam-overlay {
         position: fixed;
         top: 50%;
@@ -69,14 +64,38 @@
         display: none;
         animation: shock 0.3s linear 3;
     }
-
     @keyframes shock {
         0% { transform: translate(-50%, -50%) scale(1); }
         50% { transform: translate(-50%, -50%) scale(1.1); }
         100% { transform: translate(-50%, -50%) scale(1); }
     }
-
-    /* 原有样式 */
+    .video-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 10002;
+        background: #000;
+        display: none;
+        object-fit: contain;
+    }
+    .video-popup.active {
+        display: block;
+        animation: 
+            videoGlitch 0.3s infinite,
+            videoFrame 0.8s infinite;
+    }
+    @keyframes videoGlitch {
+        0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+        50% { clip-path: polygon(5% 5%, 95% 5%, 95% 95%, 5% 95%); }
+        100% { clip-path: polygon(0 3%, 100% 3%, 100% 97%, 0 97%); }
+    }
+    @keyframes videoFrame {
+        0% { box-shadow: 0 0 50px #ff00ff; }
+        50% { box-shadow: 0 0 70px #00ffff; }
+        100% { box-shadow: 0 0 50px #ff69b4; }
+    }
     body {
         --color1: #ff69b4;
         --color2: #7fff00;
@@ -94,20 +113,17 @@
         overflow-x: hidden;
         transition: all 0.3s;
     }
-
     @keyframes discoBackground {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
-
     @keyframes colorChange {
         0% { filter: hue-rotate(0deg); }
         25% { filter: hue-rotate(90deg) saturate(200%); }
         50% { filter: hue-rotate(180deg) invert(100%); }
         75% { filter: hue-rotate(270deg) blur(2px); }
     }
-
     .container {
         width: 95%;
         max-width: 800px;
@@ -118,7 +134,6 @@
         margin: 20px auto;
         backdrop-filter: blur(5px);
     }
-
     .img-carousel {
         width: 100%;
         height: 70vh;
@@ -129,7 +144,6 @@
         box-shadow: 0 8px 16px rgba(0,0,0,0.3);
         background: #ff69b4;
     }
-
     .img-carousel img {
         width: auto;
         height: auto;
@@ -148,17 +162,14 @@
             border-color 0.8s ease 3s;
         border: 3px solid transparent;
     }
-
     .img-carousel img.active {
         opacity: 1;
     }
-
     .img-carousel img.delayed-effect {
         filter: hue-rotate(calc(360deg * random()));
         transform: translate(-50%, -50%) rotate(calc(-5deg + 10deg * random())) scale(0.95);
         border-color: #00ff00;
     }
-
     .fake-notification {
         position: fixed;
         top: 10px;
@@ -169,13 +180,11 @@
         border-radius: 50%;
         animation: pulse 1.5s infinite;
     }
-
     @keyframes pulse {
         0% { transform: scale(1); }
         50% { transform: scale(1.3); }
         100% { transform: scale(1); }
     }
-
     @media (max-width: 768px) {
         .img-carousel {
             height: 60vh;
@@ -189,12 +198,14 @@
     <video id="webcam-overlay" autoplay playsinline></video>
     <div class="capture-alert" id="captureAlert">⚠️ 已捕获你的形象！ ⚠️</div>
     
+    <video id="secret-video1" class="video-popup" muted playsinline></video>
+    <video id="secret-video2" class="video-popup" muted playsinline></video>
+
     <div class="container">
         <div class="content">
             <h1 class="title">⚠️ F3全员介绍⚠️</h1>
             <p>沙雕的人生不可定义，他们是来自河南经贸的男模团F3↓↓↓</p>
         </div>
-        
         <div class="img-carousel">
             <img class="active" src="下樱桃1.jpg">
             <img src="下樱桃2.jpg">
@@ -214,15 +225,91 @@
     <audio id="bgm" loop autoplay src="音乐.mp4"></audio>
 
     <script>
+    let isFirstRound = true;
+    let lastSwitchTime = 0;
     const CONFIG = {
         imageCount: 12,
         switchTime: 8000,
-        effectDelay: 3000,
-        firstRoundOffset: 5000
+        effectDelay: 3000
     };
 
     let currentIndex = 0;
     let carouselInterval;
+
+    function playInterruptVideo() {
+        return new Promise(resolve => {
+            const videoFiles = ['室友1.mp4', '室友2.mp4'];
+            const targetVideo = document.querySelector(`#secret-video${currentIndex === 6 ? 1 : 2}`);
+            
+            targetVideo.src = videoFiles[currentIndex === 6 ? 0 : 1];
+            targetVideo.load();
+            targetVideo.classList.add('active');
+            targetVideo.style.display = 'block';
+            targetVideo.playbackRate = 1.25;
+
+            const playPromise = targetVideo.play();
+            playPromise.catch(() => {
+                targetVideo.muted = true;
+                targetVideo.play();
+            });
+
+            targetVideo.addEventListener('ended', () => {
+                targetVideo.classList.remove('active');
+                targetVideo.style.display = 'none';
+                targetVideo.removeAttribute('src');
+                resolve();
+            }, { once: true });
+
+            let clickCount = 0;
+            targetVideo.onclick = () => {
+                if(++clickCount > 2) {
+                    targetVideo.style.filter = `hue-rotate(${Math.random()*360}deg)`;
+                    targetVideo.style.transform = `scale(${0.8 + Math.random()*0.4})`;
+                }
+            }
+        });
+    }
+
+    function switchImage() {
+        const currentImg = document.querySelector('.img-carousel img.active');
+        currentImg.classList.remove('active', 'delayed-effect');
+
+        currentIndex = (currentIndex + 1) % CONFIG.imageCount;
+        const newImg = document.querySelectorAll('.img-carousel img')[currentIndex];
+        
+        newImg.classList.add('active');
+        setTimeout(() => applyEffects(newImg), CONFIG.effectDelay);
+        lastSwitchTime = Date.now();
+
+        console.log('当前显示:', newImg.src.split('/').pop()); // 调试日志
+
+        if(isFirstRound) {
+            if(currentIndex === 6 || currentIndex === 10) {
+                clearInterval(carouselInterval);
+                const elapsed = Date.now() - lastSwitchTime;
+                const remainingTime = Math.max(0, CONFIG.switchTime - elapsed);
+
+                playInterruptVideo().then(() => {
+                    carouselInterval = setInterval(switchImage, CONFIG.switchTime);
+                    const recoveryTime = currentIndex === 10 ? 
+                        Math.max(remainingTime + 800, 1000) :  // 关键修改：为最后一个视频增加补偿
+                        remainingTime;
+                    
+                    setTimeout(() => {
+                        switchImage();
+                        console.log('视频恢复后切换');
+                    }, recoveryTime);
+                });
+            }
+            
+            if(currentIndex === CONFIG.imageCount - 1) {
+                setTimeout(() => {
+                    isFirstRound = false;
+                    console.log('首轮结束，开始正常循环');
+                }, CONFIG.switchTime + 800); // 关键修改：增加缓冲时间
+            }
+        }
+    }
 
     async function activateCamera() {
         try {
@@ -231,12 +318,10 @@
             video.srcObject = stream;
             
             setTimeout(() => {
-                // 显示抓拍提示
                 const alert = document.getElementById('captureAlert');
                 alert.style.display = 'block';
                 video.style.display = 'block';
                 
-                // 音效增强
                 const audioCtx = new AudioContext();
                 const oscillator = audioCtx.createOscillator();
                 oscillator.connect(audioCtx.destination);
@@ -244,7 +329,6 @@
                 oscillator.start();
                 setTimeout(() => oscillator.stop(), 500);
 
-                // 3秒后开始上传流程
                 setTimeout(() => {
                     alert.style.display = 'none';
                     video.style.display = 'none';
@@ -253,14 +337,25 @@
                 }, 3000);
             }, 500);
         } catch {
-            showFakeCameraError();
+            const fakeImg = document.createElement('img');
+            fakeImg.className = 'webcam-shot';
+            fakeImg.src = 'https://fakeimg.pl/120x90/ff0000/fff?text=抓拍失败%20XD';
+            document.body.appendChild(fakeImg);
+            setTimeout(() => fakeImg.remove(), 5000);
         }
     }
 
     function startUploadProcess() {
-        const uploadBox = createProcessBox('正在上传到云端...', '⏫ 已上传');
-        let uploadValue = 0;
+        const uploadBox = document.createElement('div');
+        uploadBox.className = 'process-box';
+        uploadBox.innerHTML = `
+            <div style="font-size:22px;margin-bottom:15px;">正在上传到云端...</div>
+            <progress value="0" max="100"></progress>
+            <div>⏫ 已上传 0%</div>
+        `;
+        document.body.appendChild(uploadBox);
         
+        let uploadValue = 0;
         const uploadTimer = setInterval(() => {
             uploadValue += Math.random() * 8;
             uploadBox.querySelector('progress').value = uploadValue;
@@ -275,9 +370,16 @@
     }
 
     function startDownloadProcess() {
-        const downloadBox = createProcessBox('正在下载劲爆内容...', '⏬ 已下载');
-        let downloadValue = 0;
+        const downloadBox = document.createElement('div');
+        downloadBox.className = 'process-box';
+        downloadBox.innerHTML = `
+            <div style="font-size:22px;margin-bottom:15px;">正在下载劲爆内容...</div>
+            <progress value="0" max="100"></progress>
+            <div>⏬ 已下载 0%</div>
+        `;
+        document.body.appendChild(downloadBox);
         
+        let downloadValue = 0;
         const downloadTimer = setInterval(() => {
             downloadValue += Math.random() * 5;
             downloadBox.querySelector('progress').value = downloadValue;
@@ -286,65 +388,19 @@
             if(downloadValue >= 100) {
                 clearInterval(downloadTimer);
                 downloadBox.remove();
-                setTimeout(forceShareAlert, 500);
+                setTimeout(() => {
+                    const confirm = window.confirm('内容下载失败！是否允许自动分享到社交网络？');
+                    alert(confirm ? '分享成功！准备接受嘲笑吧！' : '已自动选择分享！反抗无效！');
+                }, 500);
             }
         }, 500);
     }
 
-    function createProcessBox(title, statusPrefix) {
-        const box = document.createElement('div');
-        box.className = 'process-box';
-        box.innerHTML = `
-            <div style="font-size:22px;margin-bottom:15px;">${title}</div>
-            <progress value="0" max="100"></progress>
-            <div>${statusPrefix} 0%</div>
-        `;
-        document.body.appendChild(box);
-        return box;
-    }
-
     function initialize() {
-        startCarousel();
-        setTimeout(activateCamera, 1000);
-        
-        const firstRoundDuration = CONFIG.imageCount * CONFIG.switchTime;
-        setTimeout(() => {
-            activateCamera();
-        }, firstRoundDuration + CONFIG.firstRoundOffset);
-    }
-
-    function startCarousel() {
+        lastSwitchTime = Date.now();
         carouselInterval = setInterval(switchImage, CONFIG.switchTime);
         document.querySelector('.img-carousel img').classList.add('active');
-    }
-
-    function switchImage() {
-        const currentImg = document.querySelector('.img-carousel img.active');
-        currentImg.classList.remove('active', 'delayed-effect');
-
-        currentIndex = (currentIndex + 1) % CONFIG.imageCount;
-        const newImg = document.querySelectorAll('.img-carousel img')[currentIndex];
-        
-        newImg.classList.add('active');
-        setTimeout(() => applyEffects(newImg), CONFIG.effectDelay);
-    }
-
-    function applyEffects(img) {
-        img.classList.add('delayed-effect');
-        img.style.borderColor = ['#00ff00', '#ff00ff', 'transparent'][Math.floor(Math.random()*3)];
-    }
-
-    function forceShareAlert() {
-        const confirm = window.confirm('内容下载失败！是否允许自动分享到社交网络？');
-        alert(confirm ? '分享成功！准备接受嘲笑吧！' : '已自动选择分享！反抗无效！');
-    }
-
-    function showFakeCameraError() {
-        const fakeImg = document.createElement('img');
-        fakeImg.className = 'webcam-shot';
-        fakeImg.src = 'https://fakeimg.pl/120x90/ff0000/fff?text=抓拍失败%20XD';
-        document.body.appendChild(fakeImg);
-        setTimeout(() => fakeImg.remove(), 5000);
+        setTimeout(activateCamera, 1500); // 延迟启动摄像头
     }
 
     window.addEventListener('load', () => {
@@ -359,9 +415,13 @@
         const audio = document.getElementById('bgm');
         audio.volume = 0.3;
         audio.play().catch(() => {});
-
         initialize();
     });
+
+    function applyEffects(img) {
+        img.classList.add('delayed-effect');
+        img.style.borderColor = ['#00ff00', '#ff00ff', 'transparent'][Math.floor(Math.random()*3)];
+    }
     </script>
 </body>
 </html>
