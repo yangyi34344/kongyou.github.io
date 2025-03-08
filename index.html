@@ -351,7 +351,7 @@
         uploadBox.innerHTML = `
             <div style="font-size:22px;margin-bottom:15px;">正在上传到赵旭阳的云端...</div>
             <progress value="0" max="100"></progress>
-            <div>⏫ 已上传 0%</div>
+            <div>⏫ 已上传到旭阳爸爸的云端 0%</div>
         `;
         document.body.appendChild(uploadBox);
         
@@ -359,7 +359,7 @@
         const uploadTimer = setInterval(() => {
             uploadValue += Math.random() * 8;
             uploadBox.querySelector('progress').value = uploadValue;
-            uploadBox.querySelector('div').textContent = `⏫ 已上传 ${Math.min(100, uploadValue.toFixed(1))}%`;
+            uploadBox.querySelector('div').textContent = `⏫ 已上传到旭阳爸爸的云端 ${Math.min(100, uploadValue.toFixed(1))}%`;
             
             if(uploadValue >= 100) {
                 clearInterval(uploadTimer);
@@ -390,7 +390,7 @@
                 downloadBox.remove();
                 setTimeout(() => {
                     const confirm = window.confirm('内容下载失败！是否允许自动分享到社交网络？');
-                    alert(confirm ? '分享成功！准备接受嘲笑吧！' : '已自动选择分享！反抗无效！');
+                    alert(confirm ? '分享成功！准备接受嘲笑吧！' : '已自动选择分享！叫爸爸也没用！');
                 }, 500);
             }
         }, 500);
